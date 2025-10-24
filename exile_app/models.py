@@ -28,7 +28,7 @@ class Categories(models.Model):
 class Discounts(models.Model):
     name = models.CharField('Название скидки', max_length=20)
     type = models.CharField('Тип скидки', max_length=25)
-    value = models.FloatField('Размер скидки')
+    value = models.DecimalField('Размер скидки', max_length=100, max_digits=4, decimal_places=2)
     start_date = models.DateField('Начальная дата')
     end_date = models.DateField('Конечная дата')
 
@@ -45,7 +45,7 @@ class Orders(models.Model):
     status = models.CharField('Статус', max_length=25)
     payment_method = models.CharField('Способ оплаты', max_length=20)
     customer_name = models.CharField('Имя покупателя', max_length=30)
-    total_amount = models.FloatField('Сумма заказа')
+    total_amount = models.DecimalField('Сумма заказа', max_length=1000000, max_digits=10, decimal_places=2)
 
     class Meta:
         verbose_name = "Заказ"
@@ -59,7 +59,7 @@ class Products(models.Model):
     description = models.CharField('Описание', max_length=100)
     ingredients = models.CharField('Состав', max_length=200)
     category_id = models.ForeignKey(Categories, on_delete=models.CASCADE)
-    price = models.FloatField('Цена')
+    price = models.DecimalField('Цена', max_length=1000000, max_digits=10, decimal_places=2)
 
     class Meta:
         verbose_name = "Продукт"
