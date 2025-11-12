@@ -48,19 +48,19 @@
      
 <div class="reviews-grid">
   <div class="review-card">
-    <h3>Алина</h3>
+    <h3>Екатерина</h3>
     <p>Очень понравился шампунь Exile! Волосы стали мягкие и послушные уже после первого применения.</p>
   </div>
   <div class="review-card">
-    <h3>Руслан</h3>
+    <h3>Камила</h3>
     <p>Гель для душа просто бомба. Запах держится долго, кожа увлажнённая и без раздражений. Рекомендую!</p>
   </div>
   <div class="review-card">
-    <h3>Жанна</h3>
+    <h3>Мила</h3>
     <p>Оформление упаковки и качество на высоте. Мыло с углём — мой фаворит. Спасибо Exile!</p>
   </div>
   <div class="review-card">
-    <h3>Айгуль</h3>
+    <h3>Жумагул</h3>
     <p>Крем для тела прекрасно увлажняет кожу, быстро впитывается и не оставляет жирного блеска. Очень довольна!</p>
   </div>
   <div class="review-card">
@@ -77,10 +77,10 @@
   <script>
     // Каталог
     const products = [
-      { id: 1, name: 'Жидкое мыло', short: 'Антибактериальный эффект, защита от бактерий', desc: 'Состав с угольной пудрой и ароматом чёрного мёда', img: '7 (1).webp' },
-      { id: 2, name: 'Бальзам для волос', short: 'Питает волосы, делает мягкими', desc: 'Восстанавливает структуру, аромат кокоса', img: '5 (1).webp' },
-      { id: 3, name: 'Гель для душа', short: 'Кремовая текстура, вишнёвый аромат', desc: 'Суперувлажнение с шоколадными нотками', img: '4.webp' },
-      { id: 4, name: 'Шампунь', short: 'Восстанавливает блеск и силу', desc: 'Аромат японского сада, цвет «Тиффани»', img: '3.webp' }
+      { id: 1, name: 'Жидкое мыло', short: 'Антибактериальный эффект, защита от бактерий', desc: 'Состав с угольной пудрой и ароматом чёрного мёда', img: 'static/media/7.webp' },
+      { id: 2, name: 'Бальзам для волос', short: 'Питает волосы, делает мягкими', desc: 'Восстанавливает структуру, аромат кокоса', img: 'static/media/5.webp' },
+      { id: 3, name: 'Гель для душа', short: 'Кремовая текстура, вишнёвый аромат', desc: 'Суперувлажнение с шоколадными нотками', img: 'static/media/4.webp' },
+      { id: 4, name: 'Шампунь', short: 'Восстанавливает блеск и силу', desc: 'Аромат японского сада, цвет «Тиффани»', img: 'static/media/3.webp' }
     ];
     const grid = document.getElementById('catalog-grid');
     function renderProducts(list) {
@@ -119,8 +119,8 @@
     };
 
     const users = [
-      { login: 'admin', password: '123456', name: 'Админ' },
-      { login: 'user@mail.com', password: 'qwerty', name: 'Пользователь' }
+      { login: 'pupunya', password: '123', name: 'Админ' },
+      { login: 'nepupunya', password: 'qwerty', name: 'Пользователь' }
     ];
     const loginBtn = document.getElementById('loginBtn');
     const loginModal = document.getElementById('loginModal');
