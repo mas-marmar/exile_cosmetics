@@ -85,7 +85,7 @@ nav a:hover {
       font-size: clamp(24px, 5vw, 38px);
       font-weight: bold;
       margin-bottom: 20px;
-      color: #009966;
+      color: #7b2070;
     }
 .banner-desc {
       font-size: 19px;
@@ -94,7 +94,7 @@ nav a:hover {
       max-width: 420px;
     }
 .banner-btn {
-      background: #00b377;
+      background: #be47b3;
       color: #fff;
       font-size: 19px;
       padding: 14px 38px;
@@ -107,11 +107,11 @@ nav a:hover {
       animation: pulse 2.5s infinite;
     }
 .banner-btn:hover {
-      background: #009966;
+      background: #5c1754;
     }
 @keyframes pulse {
       0% {
-        box-shadow: 0 0 0 0 rgba(0, 179, 119, 0.5);
+        box-shadow: 0 0 0 0 rgba(251, 18, 255, 0.5);
       }
       100% {
         box-shadow: 0 0 0 20px rgba(0, 179, 119, 0);
@@ -178,28 +178,12 @@ nav a:hover {
       text-align: center;
       padding: 0 8px;
     }
-.search-bar {
-      max-width: 480px;
-      margin: 18px auto 34px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-.search-bar input {
-      width: 100%;
-      padding: 14px 20px;
-      border-radius: 40px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      background: #fff;
-      color: #111;
-      outline: none;
-    }
+
 .reviews-title {
       text-align: center;
       margin: 60px 0 30px 0;
       font-size: 28px;
-      color: #00b377;
+      color: #6f1b65;
       font-weight: bold;
     }
 .reviews-grid {
@@ -222,7 +206,7 @@ nav a:hover {
       transform: translateY(-5px);
     }
     .review-card h3 {
-      color: #00b377;
+      color: #a2138d;
       font-size: 18px;
       margin-bottom: 12px;
     }
@@ -251,7 +235,7 @@ nav a:hover {
   transform: translateY(-5px);
 }
 .review-card h3 {
-  color: #00b377;
+  color: #b300aa;
   font-size: 18px;
   margin-bottom: 12px;
   font-weight: bold;

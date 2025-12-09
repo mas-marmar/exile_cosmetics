@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск товаров - Exile Cosmetics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .search-box {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .search-input {
+            width: 60%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #b300aa;
+            border-radius: 30px;
+            outline: none;
+        }
+        
+        .search-button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #b300aa;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .results-count {
+            margin: 20px 0;
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 20px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background-color: #f0f0f0;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .product-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        .product-price {
+            color: #b300aa;
+            font-weight: bold;
+            font-size: 20px;
+            margin-top: 10px;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #b300aa;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Поиск товаров</h1>
+        
+        <form method="GET" action="{% url 'search' %}" class="search-box">
+            <input type="text" 
+                   name="q" 
+                   value="{{ query }}" 
+                   placeholder="Введите название товара (например: шампунь, мыло, бальзам...)" 
+                   class="search-input"
+                   autofocus>
+            <button type="submit" class="search-button">Найти</button>
+        </form>
+        
+        {% if query %}
+            <div class="results-count">
+                {% if products %}
+                    Найдено товаров: {{ products.count }} по запросу "{{ query }}"
+                {% else %}
+                    По запросу "{{ query }}" ничего не найдено
+                {% endif %}
+            </div>
+            
+            {% if products %}
+                <div class="products-grid">
+                    {% for product in products %}
+                    <div class="product-card">
+                        {% if product.image %}
+                            <img src="{% static 'media/' %}{{ product.image }}" 
+                                 alt="{{ product.name }}" 
+                                 class="product-image"
+                                 onerror="this.src='{% static 'media/default_product.jpg' %}'">
+                        {% else %}
+                            <img src="{% static 'media/default_product.jpg' %}" 
+                                 alt="{{ product.name }}" 
+                                 class="product-image">
+                        {% endif %}
+                        
+                        <div class="product-info">
+                            <div class="product-name">{{ product.name }}</div>
+                            <div class="product-description">{{ product.description }}</div>
+                            
+                            {% if product.category_id %}
+                            <div style="font-size: 12px; color: #888; margin: 5px 0;">
+                                Категория: {{ product.category_id.name }}
+                            </div>
+                            {% endif %}
+                            
+                            <div class="product-price">{{ product.price }} ₽</div>
+                            
+                            <div style="font-size: 12px; color: #666; margin-top: 10px;">
+                                Состав: {{ product.ingredients|truncatechars:80 }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-results">
+                    <h3>Ничего не найдено :( </h3>
+                    <p>Попробуйте другие запросы:</p>
+                    <div style="margin-top: 20px;"> 
+                        <a href="?q=Шампунь" class="back-link">Шампунь</a> | 
+                        <a href="?q=Жидкое мыло" class="back-link">Жидкое мыло</a> | 
+                        <a href="?q=Гель для душа" class="back-link">Гель для душа</a> | 
+                        <a href="?q=Бальзам для волос" class="back-link">Бальзам для волос</a>
+                    </div>
+                </div>
+            {% endif %}
+            
+            <a href="{% url 'index' %}" class="back-link">← Вернуться на главную</a>
+            
+        {% else %}
+            <div style="text-align: center; padding: 50px;">
+                <h3>Введите запрос для поиска товаров</h3>
+                <p>Примеры запросов:</p>
+                <div style="margin-top: 20px;">
+                    <a href="?q=шампунь" style="margin: 0 10px; color: #009966;">шампунь</a>
+                    <a href="?q=мыло" style="margin: 0 10px; color: #009966;">мыло</a>
+                    <a href="?q=гель" style="margin: 0 10px; color: #009966;">гель</a>
+                    <a href="?q=бальзам" style="margin: 0 10px; color: #009966;">бальзам</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>

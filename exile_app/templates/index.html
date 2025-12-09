@@ -11,10 +11,10 @@
   <header>
     <div class="logo"><img src="/static/media/logoog.png" alt="logo" class="logo">
     <nav class="navigation">
-      <a href="about.html">О нас</a>
+      <a href="{% url 'search' %}">Поиск</a>
       <a href="index.html">Главное</a>
-      <a href="catalog.html">Каталог</a>
-      <a href="cart.html">Корзина</a>
+      <a href="catalogue.html">Каталог</a>
+      <a href="#">Корзина</a>
       <button id="loginBtn" class="login-button">Войти</button>
       <div id="loginModal" class="modal">
         <div class="modal-content">
@@ -29,16 +29,27 @@
   </header>
   <div class="banner">
     <div class="banner-content">
-      <div class="banner-title">Открой свою натуральную красоту!</div>
+      <div class="banner-title">Открой новую лимитированную коллекцию!</div>
       <div class="banner-desc">Уникальные формулы и современные ароматы для тебя.<br> Скидка 50% на первый заказ!</div>
       <a class="banner-btn" id="bannerBuyBtn" href="#">КУПИТЬ СЕЙЧАС</a>
     </div>
     <div class="banner-img-wrap">
-      <img src="static/media/ban.png" alt="Баннер: косметика Exile — натуральный уход" />
+      <img src="static/media/orig.webp" alt="Баннер: косметика Exile — натуральный уход" />
     </div>
-  </div>
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Поиск по каталогу...">
+
+<div style="text-align: center; margin: 30px 0;">
+    <form method="GET" action="{% url 'search' %}" style="display: inline-block;">
+        <input type="text" 
+               name="q" 
+               placeholder="Поиск товаров..." 
+               style="padding: 10px 20px; width: 300px; border: 2px solid #b300aa; border-radius: 25px;">
+        <button type="submit" 
+                style="padding: 10px 25px; background: #b300aa; color: white; border: none; border-radius: 25px; margin-left: 10px;">
+            Найти
+        </button>
+    </form>
+</div>
+
   </div>
   <h1 class="catalog-title">Новые товары</h1>
   <div class="catalog-grid" id="catalog-grid"></div>
@@ -73,9 +84,7 @@
   </div>
 </div>
 
-
   <script>
-    // Каталог
     const products = [
       { id: 1, name: 'Жидкое мыло', short: 'Антибактериальный эффект, защита от бактерий', desc: 'Состав с угольной пудрой и ароматом чёрного мёда', img: 'static/media/7.webp' },
       { id: 2, name: 'Бальзам для волос', short: 'Питает волосы, делает мягкими', desc: 'Восстанавливает структуру, аромат кокоса', img: 'static/media/5.webp' },
@@ -94,7 +103,7 @@
           <div class="product-short">${prod.short}</div>
         `;
         card.onclick = () => {
-          window.location.href = 'catalog.html?open=' + prod.id;
+          window.location.href = 'catalogue.html?open=' + prod.id;
         };
         grid.appendChild(card);
         setTimeout(() => card.classList.add('visible'), 200);
@@ -115,7 +124,7 @@
     });
     document.getElementById('bannerBuyBtn').onclick = function (e) {
       e.preventDefault();
-      window.location.href = 'catalog.html?open=1';
+      window.location.href = 'catalogue.html?open=1';
     };
 
     const users = [

@@ -1,14 +1,32 @@
 from django.shortcuts import render
-from .models import *
+from django.db.models import Q
+from .models import Products
 
-def online(request):
-    return render(request, 'index.html')
+def search_view(request):
+    query = request.GET.get('q', '').strip()
+    
+    if query:
+        products = Products.objects.filter(
+            Q(name__icontains=query) | 
+            Q(description__icontains=query) |  
+            Q(ingredients__icontains=query)  
+        )
+    else:
+        products = Products.objects.none()  
+    
+    context = {
+        'products': products,
+        'query': query,
+    }
+    
+    return render(request, 'search.html', context)
 
-def products(request):
-    product_number = int(request.GET.get('number', 2))
+def index(request):
+    """Главная страница"""
+    products = Products.objects.all()[:4] 
     
-    products_from_db = Products.objects.all()[product_number - 1]
+    context = {
+        'products': products,
+    }
     
-    return render(request, 'db.html', {
-        'product': products_from_db  
-    })
+    return render(request, 'index.html', context)

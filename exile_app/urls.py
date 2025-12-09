@@ -1,7 +1,7 @@
-from exile_app import views
 from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('', views.online),
-    path('product/', views.products, name='products')
+    path('', views.index, name='index'),
+    path('search/', views.search_view, name='search'),
 ]
