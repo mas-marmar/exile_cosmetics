@@ -5,24 +5,148 @@
   <title>Exile Cosmetics — Главная</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="../static/style/style.css">
+  <style>
+    /* Стили для модального окна и уведомлений */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .modal-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 15px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      position: relative;
+    }
+    
+    .close {
+      position: absolute;
+      right: 20px;
+      top: 15px;
+      font-size: 28px;
+      cursor: pointer;
+      color: #666;
+    }
+    
+    .close:hover {
+      color: #b300aa;
+    }
+    
+    .modal-content h2 {
+      color: #b300aa;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    
+    .modal-content input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #e0e0e0;
+      border-radius: 8px;
+      font-size: 16px;
+      transition: border-color 0.3s;
+    }
+    
+    .modal-content input:focus {
+      outline: none;
+      border-color: #b300aa;
+    }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #b300aa 0%, #ff66cc 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 10px;
+    }
+    
+    .submit-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    #toast {
+      display: none;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #4CAF50;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 8px;
+      z-index: 1001;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      animation: fadeIn 0.3s;
+    }
+    
+    #toast.show {
+      display: block;
+    }
+    
+    .login-button {
+      padding: 10px 25px;
+      background: #b300aa;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .login-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(179, 0, 170, 0.3);
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .login-error {
+      color: #ff3333;
+      font-size: 14px;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
   <div id="toast"></div>
   <header>
-    <div class="logo"><img src="/static/media/logoog.png" alt="logo" class="logo">
+    <div class="logo"><img src="/static/media/logoog.png" alt="logo" class="logo"></div>
     <nav class="navigation">
       <a href="{% url 'search' %}">Поиск</a>
-      <a href="index.html">Главное</a>
+      <a href="{% url 'index' %}">Главное</a>
       <a href="{% url 'catalogue' %}">Каталог</a>
-      <a href="#">Корзина</a>
+      <a href="#" id="cartLink">Корзина</a>
       <button id="loginBtn" class="login-button">Войти</button>
       <div id="loginModal" class="modal">
         <div class="modal-content">
           <span id="closeLogin" class="close">&times;</span>
           <h2>Войти в аккаунт</h2>
-          <input type="text" placeholder="Логин или email">
-          <input type="password" placeholder="Пароль">
-          <button class="submit-btn">Войти</button>
+          <input type="text" id="loginInput" placeholder="Логин или email">
+          <input type="password" id="passwordInput" placeholder="Пароль">
+          <div id="loginError" class="login-error"></div>
+          <button class="submit-btn" id="loginSubmitBtn">Войти</button>
         </div>
       </div>
     </nav>
@@ -84,6 +208,103 @@
   </div>
 
   <script>
+    const users = [
+      { login: 'pupunya', password: '123', name: 'Админ' },
+      { login: 'nepupunya', password: 'qwerty', name: 'Пользователь' }
+    ];
+    
+    const loginBtn = document.getElementById('loginBtn');
+    const loginModal = document.getElementById('loginModal');
+    const closeLogin = document.getElementById('closeLogin');
+    const loginSubmitBtn = document.getElementById('loginSubmitBtn');
+    const loginInput = document.getElementById('loginInput');
+    const passwordInput = document.getElementById('passwordInput');
+    const loginError = document.getElementById('loginError');
+    const cartLink = document.getElementById('cartLink');
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.style.background = type === 'error' ? '#ff3333' : '#4CAF50';
+      toast.className = "show";
+      
+      setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+        setTimeout(() => { toast.style.display = 'none'; }, 400);
+      }, 3000);
+    }
+
+    function updateLoginButton() {
+      const currentUser = localStorage.getItem('currentUser');
+      if (currentUser) {
+        const user = JSON.parse(currentUser);
+        loginBtn.textContent = `${user.name} (Выйти)`;
+        loginBtn.onclick = logoutUser;
+      } else {
+        loginBtn.textContent = 'Войти';
+        loginBtn.onclick = showLoginModal;
+      }
+    }
+
+    function showLoginModal() {
+      loginModal.style.display = 'flex';
+      loginInput.value = '';
+      passwordInput.value = '';
+      loginError.textContent = '';
+      setTimeout(() => loginInput.focus(), 100);
+    }
+
+    function closeLoginModal() {
+      loginModal.style.display = 'none';
+      loginError.textContent = '';
+    }
+
+    function logoutUser() {
+      localStorage.removeItem('currentUser');
+      updateLoginButton();
+      showToast('Вы успешно вышли из системы');
+    }
+
+    function loginUser() {
+      const username = loginInput.value.trim();
+      const password = passwordInput.value;
+      
+      loginError.textContent = '';
+      
+      if (!username || !password) {
+        loginError.textContent = 'Пожалуйста, заполните все поля';
+        return;
+      }
+      
+      const user = users.find(u => 
+        (u.login === username || u.login === username.toLowerCase()) && 
+        u.password === password
+      );
+      
+      if (user) {
+        localStorage.setItem('currentUser', JSON.stringify({
+          login: user.login,
+          name: user.name
+        }));
+        
+        showToast(`Добро пожаловать, ${user.name}!`);
+        closeLoginModal();
+        updateLoginButton();
+      } else {
+        loginError.textContent = 'Неверный логин или пароль';
+      }
+    }
+
+    function updateCartCount() {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+      if (cart.length > 0) {
+        cartLink.textContent = `Корзина (${cart.length})`;
+      } else {
+        cartLink.textContent = 'Корзина';
+      }
+    }
+
+    // Остальной код для продуктов
     async function loadProductsFromAdmin() {
       try {
         const response = await fetch('/api/products/');
@@ -191,7 +412,7 @@
         const addToCartBtn = card.querySelector('.add-to-cart-btn');
         addToCartBtn.addEventListener('click', (e) => {
           e.stopPropagation();
-          addToCart(product.id);
+          addToCart(product.id, product.name, product.price);
         });
         
         grid.appendChild(card);
@@ -209,16 +430,49 @@
       });
     }
 
-    function addToCart(productId) {
-      showToast('Товар добавлен в корзину!');
+    function addToCart(productId, productName, productPrice) {
+      let cart = JSON.parse(localStorage.getItem('cart') || '[]');
       
-      console.log('Добавлен товар ID:', productId);
+      const existingItem = cart.find(item => item.id === productId);
       
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          id: productId,
+          name: productName,
+          price: productPrice,
+          quantity: 1
+        });
+      }
+      
+      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      showToast(`"${productName}" добавлен в корзину!`);
       updateCartCount();
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
       console.log('Загружаем продукты из админки...');
+      
+      updateLoginButton();
+      updateCartCount();
+      
+      loginBtn.addEventListener('click', showLoginModal);
+      closeLogin.addEventListener('click', closeLoginModal);
+      loginSubmitBtn.addEventListener('click', loginUser);
+      
+      window.addEventListener('click', (e) => {
+        if (e.target === loginModal) {
+          closeLoginModal();
+        }
+      });
+      
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          loginUser();
+        }
+      });
       
       const products = await loadProductsFromAdmin();
       renderProducts(products);
@@ -228,38 +482,6 @@
         window.location.href = '/catalogue/'; 
       });
     });
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      toast.innerHTML = msg;
-      toast.className = "show";
-      setTimeout(() => {
-        toast.className = toast.className.replace("show", "");
-        setTimeout(() => { toast.style.display = 'none'; }, 400);
-      }, 1800);
-      toast.style.display = 'block';
-    }
-
-    function updateCartCount() {
-      const cartCount = parseInt(localStorage.getItem('cartCount') || '0') + 1;
-      localStorage.setItem('cartCount', cartCount.toString());
-      
-      const cartLink = document.querySelector('a[href="#"]');
-      if (cartLink && cartCount > 0) {
-        cartLink.textContent = `Корзина (${cartCount})`;
-      }
-    }
-
-    const users = [
-      { login: 'pupunya', password: '123', name: 'Админ' },
-      { login: 'nepupunya', password: 'qwerty', name: 'Пользователь' }
-    ];
-    
-    const loginBtn = document.getElementById('loginBtn');
-    const loginModal = document.getElementById('loginModal');
-    const closeLogin = document.getElementById('closeLogin');
-    const loginInputs = loginModal.querySelectorAll('input');
-    const submitBtn = loginModal.querySelector('.submit-btn');
 
   </script>
 </body>
