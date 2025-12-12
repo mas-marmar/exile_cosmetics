@@ -60,6 +60,10 @@ class Products(models.Model):
     ingredients = models.CharField('Состав', max_length=200)
     category_id = models.ForeignKey(Categories, on_delete=models.CASCADE)
     price = models.DecimalField('Цена', max_length=1000000, max_digits=10, decimal_places=2)
+    image = models.ImageField('Изображение', upload_to='products/', blank=True, null=True)
+
+    def image(self):
+        return None 
 
     class Meta:
         verbose_name = "Продукт"

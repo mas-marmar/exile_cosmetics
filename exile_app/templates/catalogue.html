@@ -1,687 +1,93 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Каталог | Exile Cosmetics</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #fdfdfd;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #fff;
-      padding: 18px 40px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-      font-weight: bold;
-      font-size: 22px;
-      letter-spacing: 1px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-weight: bold;
-      font-size: 22px;
-      letter-spacing: 1px;
-    }
-    nav {
-      display: flex;
-      gap: 18px;
-    }
-    nav a {
-      background: #f4f4f4;
-      color: #222;
-      font-size: 15px;
-      padding: 9px 18px;
-      border-radius: 20px;
-      text-decoration: none;
-      font-weight: 500;
-      transition: background 0.2s, color 0.2s;
-      cursor: pointer;
-    }
-    nav a:hover {
-      background: #222;
-      color: #fff;
-    }
-    .catalog-title {
-      text-align: center;
-      margin: 38px 0 24px;
-      font-size: 32px;
-      font-weight: 700;
-    }
-    .search-bar {
-      max-width: 480px;
-      margin: 24px auto 28px auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .search-bar input {
-      width: 100%;
-      padding: 14px 20px;
-      border-radius: 40px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-      background: #fff;
-      color: #111;
-      outline: none;
-    }
-    .catalog-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-      gap: 36px;
-      padding: 0 40px 60px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-    .product-card {
-      background: #fff;
-      border-radius: 18px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.09);
-      padding-bottom: 18px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      cursor: pointer;
-      transition: transform .2s;
-    }
-    .product-card:hover {
-      transform: translateY(-8px) scale(1.03);
-    }
-    .product-card img {
-      width: 100%;
-      max-width: 190px;
-      height: 220px;
-      object-fit: contain;
-      border-radius: 16px 16px 0 0;
-      background: #f4f4f4;
-      margin: 12px 0 8px;
-    }
-    .product-name {
-      font-weight: 600;
-      font-size: 18px;
-      margin: 0 0 4px;
-      text-align: center;
-    }
-    .product-short {
-      color: #888;
-      font-size: 15px;
-      padding: 0 8px;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 9999;
-      inset: 0;
-      background: rgba(0,0,0,0.38);
-      align-items: center;
-      justify-content: center;
-    }
-    .modal.active { display: flex; }
-    .modal-content {
-      background: #fff;
-      border-radius: 18px;
-      width: 95vw;
-      max-width: 420px;
-      padding: 32px 32px 24px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
-      position: relative;
-      animation: modalIn .27s cubic-bezier(.33,1.53,.7,1.12);
-    }
-    @keyframes modalIn {
-      from { opacity: 0; transform: translateY(32px) scale(.92); }
-      to   { opacity: 1; transform: translateY(0) scale(1); }
-    }
-    .modal-content img {
-      display: block;
-      margin: 0 auto 14px;
-      width: 160px;
-      height: 160px;
-      object-fit: contain;
-    }
-    .modal-close {
-      position: absolute;
-      top: 18px; right: 22px;
-      font-size: 22px;
-      color: #aaa;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-    .modal-close:hover { color: #333; }
-    .modal-name {
-      font-size: 22px;
-      font-weight: bold;
-      text-align: center;
-      margin: 10px 0 8px;
-    }
-    .modal-desc {
-      font-size: 16px;
-      color: #555;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    .modal-price {
-      font-size: 20px;
-      color: #219150;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 22px;
-    }
-    .add-to-cart-btn {
-      display: block;
-      margin: 0 auto;
-      background: #00b894;
-      color: #fff;
-      font-size: 17px;
-      font-weight: bold;
-      padding: 12px 28px;
-      border: none;
-      border-radius: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.07);
-      cursor: pointer;
-      transition: background .17s;
-    }
-    .add-to-cart-btn:hover { background: #007863; }
-    .notify {
-      display: none;
-      position: fixed;
-      top: 34px; left: 50%;
-      transform: translateX(-50%);
-      background: #fff;
-      color: #00b894;
-      padding: 18px 40px;
-      font-size: 18px;
-      font-weight: bold;
-      border-radius: 18px;
-      box-shadow: 0 2px 18px rgba(0,0,0,0.14);
-      letter-spacing: 1px;
-      z-index: 10001;
-      animation: fadeInOut 2.4s forwards;
-    }
-    @keyframes fadeInOut {
-      0% { opacity: 0; }
-      20% { opacity: 1; }
-      80% { opacity: 1; }
-      100% { opacity: 0; }
-    }
-
-    .set-modal-content {
-      max-width: 900px;
-      width: 98vw;
-      padding: 34px 24px 26px;
-    }
-    .set-modal-flex {
-      display: flex;
-      gap: 30px;
-    }
-    .set-modal-imgbox {
-      flex: 0 0 370px;
-      max-width: 400px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 0 12px;
-    }
-    .set-modal-imgbox img {
-      width: 98%;
-      max-width: 340px;
-      border-radius: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 18px rgba(30,0,0,.08);
-    }
-    .set-modal-name {
-      font-size: 27px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      text-align: center;
-    }
-    .set-modal-price {
-      color: #00b894;
-      font-size: 22px;
-      font-weight: bold;
-      margin-bottom: 16px;
-    }
-    .set-modal-info {
-      flex: 1;
-      min-width: 250px;
-    }
-    .set-modal-info-title {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 8px;
-    }
-    .set-modal-info-list {
-      font-size: 16px;
-      color: #444;
-      margin-bottom: 14px;
-      white-space: pre-line;
-    }
-    .set-modal-items-title {
-      font-size: 17px;
-      margin: 20px 0 7px;
-      font-weight: bold;
-    }
-    .set-modal-items {
-      display: flex;
-      gap: 14px;
-    }
-    .set-modal-item-card {
-      width: 70px;
-      height: 90px;
-      background: #f2f2f2;
-      border-radius: 11px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: box-shadow .2s, border-color .2s;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
-      border: 2px solid transparent;
-    }
-    .set-modal-item-card:hover {
-      border-color: #00b894;
-      box-shadow: 0 2px 8px #00b89422;
-    }
-    .set-modal-item-card img {
-      width: 100%;
-      height: 56px;
-      object-fit: contain;
-      margin-bottom: 3px;
-      background: #fafafa;
-    }
-    .set-modal-item-card-name {
-      font-size: 12px;
-      color: #222;
-      text-align: center;
-      padding: 2px 4px 4px 4px;
-      font-weight: 500;
-      line-height: 1.2;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог - Exile Cosmetics</title>
+    <style>
+        .catalogue-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+        
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .product-name {
+            font-weight: bold;
+            font-size: 18px;
+            margin: 10px 0;
+        }
+        
+        .product-price {
+            color: #b300aa;
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: #b300aa;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="logo">Exile Cosmetics</div>
-    <nav>
-      <a href="#">О нас</a>
-      <a href="index.html">Главное</a>
-      <a href="#">Корзина</a>
-    </nav>
-  </header>
-  
-  <div class="search-bar">
-    <input type="text" id="searchInput" placeholder="Поиск по каталогу...">
-  </div>
-  
-  <h1 class="catalog-title">Каталог продукции</h1>
-  <div class="catalog-grid" id="catalog-grid"></div>
-  <h1 class="catalog-title">Наборы</h1>
-  <div class="catalog-grid" id="sets-grid"></div>
-
-  <div class="modal" id="productModal">
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose">&times;</button>
-      <img src="" id="modalImg" alt="">
-      <div class="modal-name" id="modalName"></div>
-      <div class="modal-desc" id="modalDesc"></div>
-      <div class="modal-price" id="modalPrice"></div>
-      <button class="add-to-cart-btn" id="addToCartBtn">Добавить в корзину</button>
-    </div>
-  </div>
-
-  <div class="modal" id="setModal">
-    <div class="modal-content set-modal-content">
-      <button class="modal-close" id="setModalClose">&times;</button>
-      <div class="set-modal-flex">
-        <div class="set-modal-imgbox">
-          <img src="" id="setModalImg" alt="">
-          <div class="set-modal-name" id="setModalName"></div>
-          <div class="set-modal-price" id="setModalPrice"></div>
-          <button class="add-to-cart-btn" id="addSetToCartBtn">Добавить в корзину</button>
+    <div class="catalogue-container">
+        <a href="{% url 'index' %}" class="back-button">← На главную</a>
+        <h1>Каталог товаров</h1>
+        
+        {% if selected_product %}
+        <div class="product-detail">
+            <h2>{{ selected_product.name }}</h2>
+            <p><strong>Описание:</strong> {{ selected_product.description }}</p>
+            <p><strong>Состав:</strong> {{ selected_product.ingredients }}</p>
+            <p><strong>Цена:</strong> {{ selected_product.price }} ₽</p>
+            <button onclick="addToCart({{ selected_product.id }})">Добавить в корзину</button>
         </div>
-        <div class="set-modal-info">
-          <div class="set-modal-info-title">Дополнительная информация</div>
-          <div class="set-modal-info-list" id="setModalInfo"></div>
-          <div class="set-modal-items-title">Товары в наборе</div>
-          <div class="set-modal-items" id="setModalItems"></div>
+        {% endif %}
+        
+        <div class="product-grid">
+            {% for product in products %}
+            <div class="product-card" onclick="window.location.href='?product={{ product.id }}'">
+                <img src="/static/media/default-product.png" alt="{{ product.name }}" style="width:100%; height:200px; object-fit:cover;">
+                <div class="product-name">{{ product.name }}</div>
+                <div class="product-description">{{ product.description|truncatechars:50 }}</div>
+                <div class="product-price">{{ product.price }} ₽</div>
+            </div>
+            {% empty %}
+            <p>Нет товаров в каталоге</p>
+            {% endfor %}
         </div>
-      </div>
     </div>
-  </div>
-  <div class="notify" id="notify"></div>
-  <script>
-    const params = new URLSearchParams(window.location.search);
-    const openId = params.get('open');
-    const products = [
-      {
-        id: 1,
-        name: 'Жидкое мыло',
-        short: 'Антибактериальный эффект, защита от бактерий',
-        desc: 'В составе угольная пудра, защита от бактерий. Аромат черного мёда.',
-        img: '7 (1).webp',
-        price: 340
-      },
-       {
-        id: 2,
-        name: 'Бальзам для волос',
-        short: 'Запечатывает секущиеся кончики, питает волосы',
-        desc: 'Аромат кокоса, мягкие и послушные волосы, эффект восстановления.',
-        img: '5 (1).webp',
-        price: 390
-      },
-      {
-        id: 3,
-        name: 'Гель для душа',
-        short: 'Сливочно-шоколадные ноты, кремовая текстура',
-        desc: 'Суперувлажнение, сливочно-шоколадные ноты, кремовая текстура.',
-        img: '4.webp',
-        price: 320
-      },
-      {
-        id: 4,
-        name: 'Шампунь',
-        short: 'Восстанавливает структуру волос, придает блеск',
-        desc: 'Аромат японского сада, цвет «Тиффани», придает силу и блеск.',
-        img: '3.webp',
-        price: 360
-      },
-      {
-        id: 5,
-        name: 'Бальзам cherry',
-        short: 'Мягкие и послушные волосы, эффект восстановления',
-        desc: 'Восстанавливающий комплекс растительных экстрактов, мягкие волосы.',
-        img: '6 (1).webp',
-        price: 390
-      },
-      {
-        id: 6,
-        name: 'Шампунь cherry',
-        short: 'Мягкие и послушные волосы',
-        desc: 'Эффект восстановления и блеска',
-        img: 'Shampoo cherry.webp',
-        price: 410
-      },
-      {
-        id: 7,
-        name: 'Гель для душа cherry',
-        short: 'Увлажнение и питание',
-        desc: 'бережно очищает кожу, оставляя ощущение свежести и легкий сладкий шлейф вишни.',
-        img: 'Гель cherry.webp',
-        price: 400
-      },
-      {
-        id: 8,
-        name: 'Cкраб для тела cherry',
-        short: 'Аромат шоколада',
-        desc: 'Бережное очищение и уход за кожей',
-        img: 'Cкраб для тела cherry.webp',
-        price: 550
-      },
-      {
-        id: 9,
-        name: 'Гель для душа chocolate',
-        short: 'Аромат шоколада',
-        desc: 'Бережное очищение и уход за кожей',
-        img: 'GEL.webp',
-        price: 500
-      },
-      {
-        id: 10,
-        name: 'Шампунь black cherry ',
-        short: 'Аромат вишни',
-        desc: 'Придает блеск и силу',
-        img: 'SHAMPOO.webp',
-        price: 505
-      },
-      {
-        id: 11,
-        name: 'Бальзам для волос black vanila',
-        short: 'Аромат ванили',
-        desc: 'Укрепляет и запечатывает секущие кончики',
-        img: 'BALZAM.webp',
-        price: 400
-      },
-      {
-        id: 12,
-        name: 'Жидкое мыло black honey',
-        short: 'Аромат меда',
-        desc: 'Защита от бактерий',
-        img: 'MILO.webp',
-        price: 450
-      },
-      {
-        id: 13,
-        name: 'Гель для душа',
-        short: 'Аромат вишнего смузи',
-        desc: 'С маслом ши и ванилью',
-        img: 'Гель для душа.webp'
-      },
-      {
-       id: 14,
-       name: 'Шампунь для волос',
-       short: 'Аромат чирничного смузи',
-       desc: 'С витамином Е',
-       img: 'Шампунь.webp'
-      },
-      {
-       id: 15,
-       name: 'Бальзам для волос',
-       short: 'Аромат какоса',
-       desc: 'С глиной и углем',
-       img: 'Бальзам для валос.webp'
-      },
-      {
-       id: 16,
-       name: 'Жидкое мыло',
-       short: 'Аромат шоколадва и сливок',
-       desc: 'Лёгкое скольжение бритвы',
-       img: 'Жидкое мыло.webp'
-      },
-    ];
-    const sets = [
-        {
-        id: 100,
-        name: "Supreme cherry",
-        desc: "Большой набор Supreme Cherry для красоты и ухода.",
-        img: "SUPREME SHERY NABOR.webp",
-        price: 14556,
-        info: {
-          composition: "бальзам для волос 200 мл — 1шт;\nгель для душа 200 мл — 1шт;\nмыло для рук 200 мл — 1шт;\nкрем-лосьон для тела 200 мл — 1шт;\nшампунь для волос 200 мл — 1шт;\nзубная паста 150 мл — 1шт;\nзубная щётка — 1шт;\nноски — 1 пара",
-          action: "очищение, увлажнение, питание",
-          expiration: "24 мес",
-          madeIn: "Казахстан"
-        },
-        items: [5, 6, 7, 8]
-      },
-      {
-        id: 101,
-        name: "Black colection",
-        desc: "Элегантный набор с глубокими ароматами чёрной коллекции.",
-        img: "BLACK NABOR.webp",
-        price: 10500,
-        info: {
-          composition: "шампунь — 1шт;\nбальзам — 1шт;\nмыло — 1шт;\nскраб — 1шт;",
-          action: "очищение, питание",
-          expiration: "24 мес",
-          madeIn: "Казахстан "
-        },
-        items: [ 9 ,10, 11, 12,]
-      },
-      {
-        id: 4,
-        name: 'Набор ухода за собой',
-        short: 'Восстанавливает структуру волос, придает блеск',
-        desc: 'очищение; увлажнение; питание.',
-        img: 'NABOR уход за собой.webp',
-        price: 15000,
-        info: {
-          composition: "шампунь — 1шт;\nбальзам — 1шт;\nмыло — 1шт;\nскраб — 1шт;",
-          action: "очищение, питание",
-          expiration: "24 мес",
-          madeIn: "Казахстан "
-        },
-        items: [ 13 ,14, 15, 16, ]
-      },
-    ];
-    const imgPath = "";
-
-    const grid = document.getElementById('catalog-grid');
-    const setsGrid = document.getElementById('sets-grid');
-
-    function renderProducts(list) {
-      grid.innerHTML = '';
-      list.forEach(p => {
-        const c = document.createElement('div');
-        c.className = 'product-card';
-        c.innerHTML = `
-          <img src="${imgPath}${p.img}" alt="${p.name}">
-          <div class="product-name">${p.name}</div>
-          <div class="product-short">${p.short}</div>
-        `;
-        c.onclick = () => openModal(p);
-        grid.appendChild(c);
-      });
-    }
-
-    function renderSets(list) {
-      setsGrid.innerHTML = '';
-      list.forEach(s => {
-        const c = document.createElement('div');
-        c.className = 'product-card';
-        c.innerHTML = `
-          <img src="${imgPath}${s.img}" alt="${s.name}">
-          <div class="product-name">${s.name}</div>
-          <div class="product-short">${s.desc}</div>
-        `;
-        c.onclick = () => openSetModal(s);
-        setsGrid.appendChild(c);
-      });
-    }
-
-    renderProducts(products);
-    renderSets(sets);
-
-    const searchInput = document.getElementById('searchInput');
-    searchInput.addEventListener('input', function () {
-      const q = this.value.toLowerCase();
-      if (q.length < 2) {
-        renderProducts(products);
-        renderSets(sets);
-        return;
-      }
-      const filteredProducts = products.filter(
-        p =>
-          p.name.toLowerCase().includes(q) ||
-          (p.short && p.short.toLowerCase().includes(q)) ||
-          (p.desc && p.desc.toLowerCase().includes(q))
-      );
-      const filteredSets = sets.filter(
-        s =>
-          s.name.toLowerCase().includes(q) ||
-          (s.desc && s.desc.toLowerCase().includes(q))
-      );
-      renderProducts(filteredProducts);
-      renderSets(filteredSets);
-    });
-
-    const modal = document.getElementById('productModal');
-    const modalImg = document.getElementById('modalImg');
-    const modalName = document.getElementById('modalName');
-    const modalDesc = document.getElementById('modalDesc');
-    const modalPrice = document.getElementById('modalPrice');
-    const addBtn = document.getElementById('addToCartBtn');
-    let sel = null;
-    function openModal(x) {
-      sel = x;
-      modalImg.src = imgPath + x.img;
-      modalName.textContent = x.name;
-      modalDesc.textContent = x.desc;
-      modalPrice.textContent = x.price ? x.price + ' ₸' : '';
-      modal.classList.add('active');
-    }
-    document.getElementById('modalClose').onclick = () => modal.classList.remove('active');
-    modal.onclick = e => { if (e.target === modal) modal.classList.remove('active'); };
-
-    addBtn.onclick = () => {
-      let cart = JSON.parse(localStorage.getItem('cart')||'[]');
-      const found = cart.find(i=>i.id===sel.id);
-      if (found) found.qty++;
-      else cart.push({...sel, qty:1});
-      localStorage.setItem('cart', JSON.stringify(cart));
-      document.getElementById('notify').textContent = 'Добавлено в корзину!';
-      document.getElementById('notify').style.display = 'block';
-      setTimeout(()=> document.getElementById('notify').style.display='none',2200);
-      modal.classList.remove('active');
-    };
-
-    function openSetModal(set) {
-      document.getElementById('setModalImg').src = imgPath + set.img;
-      document.getElementById('setModalName').textContent = set.name;
-      document.getElementById('setModalPrice').textContent = set.price + ' ₸';
-      document.getElementById('setModalInfo').innerHTML =
-        `<b>Комплектация:</b> <br>${set.info.composition}<br><br>
-        <b>Действие:</b> ${set.info.action}<br>
-        <b>Срок годности:</b> ${set.info.expiration}<br>
-        <b>Страна производства:</b> ${set.info.madeIn}`;
-
-      const setModalItems = document.getElementById('setModalItems');
-      setModalItems.innerHTML = '';
-      set.items.forEach(id => {
-        const prod = products.find(p => p.id === id);
-        if (prod) {
-          const card = document.createElement('div');
-          card.className = 'set-modal-item-card';
-          card.innerHTML = `
-            <img src="${imgPath}${prod.img}" alt="">
-            <div class="set-modal-item-card-name">${prod.name.split(' ')[0]}</div>
-          `;
-          card.onclick = e => {
-            openModal(prod);
-            document.getElementById('setModal').classList.remove('active');
-          };
-          setModalItems.appendChild(card);
+    
+    <script>
+        function addToCart(productId) {
+            alert('Товар добавлен в корзину!');
         }
-      });
-      document.getElementById('setModal').classList.add('active');
-    }
-    document.getElementById('setModalClose').onclick = () =>
-      document.getElementById('setModal').classList.remove('active');
-    document.getElementById('setModal').onclick = e => {
-      if (e.target === document.getElementById('setModal'))
-        document.getElementById('setModal').classList.remove('active');
-    };
-    document.getElementById('addSetToCartBtn').onclick = function() {
-      const name = document.getElementById('setModalName').textContent;
-      const set = sets.find(s => s.name === name);
-      if (!set) return;
-      let cart = JSON.parse(localStorage.getItem('cart')||'[]');
-      const found = cart.find(i=>i.id===set.id);
-      if (found) found.qty++;
-      else cart.push({...set, qty:1});
-      localStorage.setItem('cart', JSON.stringify(cart));
-      document.getElementById('notify').textContent = 'Набор добавлен в корзину!';
-      document.getElementById('notify').style.display = 'block';
-      setTimeout(()=> document.getElementById('notify').style.display='none',2200);
-      document.getElementById('setModal').classList.remove('active');
-    };
-
-    if (openId) {
-      setTimeout(() => {
-        const all = [...products, ...sets];
-        const f = all.find(x => x.id == openId);
-        if (f) {
-          if (sets.find(s => s.id == openId)) openSetModal(f);
-          else openModal(f);
-        }
-      }, 200);
-    }
-  </script>
+    </script>
 </body>
 </html>

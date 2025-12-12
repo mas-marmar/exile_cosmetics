@@ -142,21 +142,10 @@
                 <div class="products-grid">
                     {% for product in products %}
                     <div class="product-card">
-                        {% if product.image %}
-                            <img src="{% static 'media/' %}{{ product.image }}" 
-                                 alt="{{ product.name }}" 
-                                 class="product-image"
-                                 onerror="this.src='{% static 'media/default_product.jpg' %}'">
-                        {% else %}
-                            <img src="{% static 'media/default_product.jpg' %}" 
-                                 alt="{{ product.name }}" 
-                                 class="product-image">
-                        {% endif %}
-                        
                         <div class="product-info">
                             <div class="product-name">{{ product.name }}</div>
                             <div class="product-description">{{ product.description }}</div>
-                            
+                    
                             {% if product.category_id %}
                             <div style="font-size: 12px; color: #888; margin: 5px 0;">
                                 Категория: {{ product.category_id.name }}
@@ -192,10 +181,10 @@
                 <h3>Введите запрос для поиска товаров</h3>
                 <p>Примеры запросов:</p>
                 <div style="margin-top: 20px;">
-                    <a href="?q=шампунь" style="margin: 0 10px; color: #009966;">шампунь</a>
-                    <a href="?q=мыло" style="margin: 0 10px; color: #009966;">мыло</a>
-                    <a href="?q=гель" style="margin: 0 10px; color: #009966;">гель</a>
-                    <a href="?q=бальзам" style="margin: 0 10px; color: #009966;">бальзам</a>
+                    <a href="?q=Шампунь" style="margin: 0 10px; color: #b300aa;">Шампунь</a>
+                    <a href="?q=Жидкое мыло" style="margin: 0 10px; color: #b300aa;">Жидкое мыло</a>
+                    <a href="?q=Гель для душа" style="margin: 0 10px; color: #b300aa;">Гель для душа</a>
+                    <a href="?q=Бальзам" style="margin: 0 10px; color: #b300aa;">Бальзам</a>
                 </div>
             </div>
         {% endif %}
